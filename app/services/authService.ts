@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import prisma from '../../app/config/db';
 import { getToken } from '../utils/token';
 import { UserPublicData } from '../../types/auth';
@@ -11,7 +10,6 @@ export const getUsers = async () => {
           name: true,
         },
       },
-      tokens: true,
       products: true,
     },
   });
