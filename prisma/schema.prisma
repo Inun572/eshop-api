@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String
+  fullname  String
+  email     String    @unique
+  password  String
+  address   String    @db.Text
+  role_id   Int
+  is_active Boolean   @default(true)
+  tokens    Token[]
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  role Role @relation(fields: [role_id], references: [id])
+
+  @@map("users")
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("tokens")
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String
+  users       User[]
+  permissions PermissionRole[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id        Int              @id @default(autoincrement())
+  name      String
+  roles     PermissionRole[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("permissions")
+}
+
+model PermissionRole {
+  role_id       Int
+  permission_id Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  role       Role       @relation(fields: [role_id], references: [id])
+  permission Permission @relation(fields: [permission_id], references: [id])
+
+  @@id([role_id, permission_id])
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String      @db.Text
+  price       Float
+  stock       Int
+  category_id Int
+  is_deleted  Boolean     @default(false)
+  user_id     Int
+  images      Image[]
+  carts       CartItem[]
+  ItemOrder   ItemOrder[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  category Category @relation(fields: [category_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@map("products")
+}
+
+model Image {
+  id         Int      @id @default(autoincrement())
+  imageUrl   String
+  product_id Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("images")
+}
+
+model Cart {
+  id           Int        @id @default(autoincrement())
+  user_id      Int
+  total_items  Int
+  total_amount Float
+  items        CartItem[]
+  Order        Order[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@map("carts")
+}
+
+model CartItem {
+  cart_id    Int
+  product_id Int
+  quantity   Int
+  total      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cart_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@id([cart_id, product_id])
+  @@map("cart_item")
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  date         DateTime
+  order_number String
+  cart_id      Int
+  total_amount Float
+  is_paid      Boolean     @default(false)
+  items        ItemOrder[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  cart Cart @relation(fields: [cart_id], references: [id])
+
+  @@map("orders")
+}
+
+model ItemOrder {
+  order_id   Int
+  product_id Int
+  quantity   Int
+  total      Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order   Order   @relation(fields: [order_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@id([order_id, product_id])
+  @@map("item_order")
+}
