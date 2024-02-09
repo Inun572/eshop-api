@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
-import { getUsers } from '../services/userServices';
+import {
+  getUserByEmail,
+  getUsers,
+} from '../services/userServices';
 import { createToken } from '../services/authServices';
 
 export const getAllUsers = async (
@@ -24,11 +27,14 @@ export const login = async (
   res: Response
 ) => {
   try {
-    const token = await createToken(req.body);
-    res.json({
-      message: 'Success login',
-      token,
-    });
+    const user = req.user;
+    if (user !== undefined) {
+      const token = await createToken(user);
+      res.json({
+        message: 'Success login',
+        token,
+      });
+    }
   } catch (err) {
     res.status(500).json({
       message: 'Internal Server Error',
