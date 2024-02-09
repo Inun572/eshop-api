@@ -1,27 +1,6 @@
-import prisma from '../../app/config/db';
+import prisma from '../config/db';
 import { getToken } from '../utils/token';
 import { UserPublicData } from '../../types/auth';
-
-export const getUsers = async () => {
-  return await prisma.user.findMany({
-    include: {
-      role: {
-        select: {
-          name: true,
-        },
-      },
-      products: true,
-    },
-  });
-};
-
-export const getUserByEmail = async (email: string) => {
-  return await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-};
 
 export const createToken = async (user: UserPublicData) => {
   const token = getToken(user);
