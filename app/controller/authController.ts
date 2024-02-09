@@ -35,9 +35,10 @@ export const login = async (
         token,
       });
     }
-  } catch (err) {
+  } catch (err: unknown) {
     res.status(500).json({
       message: 'Internal Server Error',
+      error: err,
     });
   }
 };

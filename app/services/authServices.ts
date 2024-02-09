@@ -4,6 +4,7 @@ import { UserPublicData } from '../../types/auth';
 
 export const createToken = async (user: UserPublicData) => {
   const token = getToken(user);
+  console.log(token);
   return await prisma.token.create({
     data: {
       token,
@@ -15,7 +16,7 @@ export const createToken = async (user: UserPublicData) => {
 };
 
 export const findToken = async (token: string) => {
-  return await prisma.token.findUnique({
+  return await prisma.token.findFirst({
     where: { token },
     include: {
       user: {

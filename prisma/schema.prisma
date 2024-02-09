@@ -30,7 +30,7 @@ model User {
 model Token {
   id        Int      @id @default(autoincrement())
   user_id   Int
-  token     String   @unique
+  token     String   @db.Text
   expire_at DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,7 +88,7 @@ model Shop {
 
 model Category {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String    @unique
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -160,7 +160,7 @@ model CartItem {
 model Order {
   id           Int         @id @default(autoincrement())
   date         DateTime
-  order_number String
+  order_number String      @unique
   cart_id      Int
   total_amount Float
   is_cancelled Boolean     @default(false)

@@ -9,7 +9,7 @@ export const validateLoginRequest = async (
 ) => {
   let errorMsg = '';
   const { username, email, password } = req.body;
-  if (!email || !username) {
+  if (!email && !username) {
     errorMsg += 'Email or username is required';
   }
   if (!password) {
@@ -28,16 +28,16 @@ export const validateLoginRequest = async (
       .json({ message: 'Invalid email format' });
   }
 
-  if (
-    /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/.test(
-      password
-    ) === false
-  ) {
-    return res.status(400).json({
-      message:
-        'Password must be at least 8 characters long and contain at least one uppercase letter and one lowercase letter',
-    });
-  }
+  // if (
+  //   /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/.test(
+  //     password
+  //   ) === false
+  // ) {
+  //   return res.status(400).json({
+  //     message:
+  //       'Password must be at least 8 characters long and contain at least one uppercase letter and one lowercase letter',
+  //   });
+  // }
 
   const user = await getUserByEmail(email);
 
