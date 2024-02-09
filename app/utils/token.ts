@@ -9,7 +9,7 @@ export const getToken = (payload: UserPublicData) => {
     payload,
     process.env.JWT_SECRET as string,
     {
-      expiresIn: '24h',
+      expiresIn: process.env.JWT_EXPIRES_TIME as string,
     }
   );
 };
