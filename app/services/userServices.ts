@@ -1,5 +1,5 @@
 import prisma from '../../app/config/db';
-import { RegisterData } from '../../types/user/user';
+import { RegisterData, UpdateDataUser } from '../../types/user/user';
 
 export const getUsers = async () => {
   return await prisma.user.findMany({
@@ -19,10 +19,21 @@ export const getUsers = async () => {
   });
 };
 
-export const getUserByEmail = async (email: string) => {
-  return await prisma.user.findUnique({
+export const findUser = async (emailOrUsername: string) => {
+  return await prisma.user.findFirst({
     where: {
-      email,
+      OR: [
+        {
+          email: {
+            equals: emailOrUsername,
+          },
+        },
+        {
+          username: {
+            equals: emailOrUsername,
+          },
+        },
+      ],
     },
   });
 };
@@ -36,6 +47,31 @@ export const addUser = async (data: RegisterData) => {
       password: data.password,
       address: data.address,
       role_id: data.roleId,
+    },
+  });
+};
+
+export const updateUser = async (id: number, data: UpdateDataUser) => {
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      fullname: data.fullname,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      address: data.address,
+      role_id: data.roleId,
+      is_active: data.isActive,
+    },
+  });
+};
+
+export const deleteUser = async (id: number) => {
+  return await prisma.user.delete({
+    where: {
+      id,
     },
   });
 };

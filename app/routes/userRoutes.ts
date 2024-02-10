@@ -3,7 +3,12 @@ import {
   authorizePermission,
   validateToken,
 } from '../middlewares/authMiddleware';
-import { getAllUsers, registerUser } from '../controller/userController';
+import {
+  deleteUser,
+  getAllUsers,
+  registerUser,
+  updateUser,
+} from '../controller/userController';
 import { validateRegisterRequest } from '../validator/registerValidator';
 
 const router = Router();
@@ -16,5 +21,12 @@ router.get(
 );
 
 router.post('/register', validateRegisterRequest, registerUser);
+router.put('/:id', validateToken, authorizePermission('edit_user'), updateUser);
+router.delete(
+  '/:id',
+  validateToken,
+  authorizePermission('delete_user'),
+  deleteUser
+);
 
 export default router;

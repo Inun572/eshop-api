@@ -6,3 +6,7 @@ export interface RegisterData {
   address: string;
   roleId: number;
 }
+
+export interface UpdateDataUser extends RegisterData {
+  isActive: boolean;
+}

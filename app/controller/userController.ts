@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
-import { addUser, getUsers } from '../services/userServices';
+import {
+  addUser,
+  getUsers,
+  updateUser as updateData,
+  deleteUser as deleteData,
+} from '../services/userServices';
 import { hashPassword } from '../utils/hashing';
-import { ZodError } from 'zod';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -36,6 +41,73 @@ export const registerUser = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({
       message: 'Internal Server Error',
+    });
+  }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.params.id) {
+      return res.status(400).json({
+        message: 'Id is required',
+      });
+    }
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({
+        message: 'Id is required',
+      });
+    }
+
+    await updateData(id, req.body);
+
+    res.json({
+      message: 'Success update user',
+    });
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError) {
+      return res.status(400).json({
+        message: err.meta?.cause,
+      });
+    }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.params.id) {
+      return res.status(400).json({
+        message: 'Id is required',
+      });
+    }
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({
+        message: 'Id is required',
+      });
+    }
+
+    await deleteData(id);
+
+    res.json({
+      message: 'Success delete user',
+    });
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError) {
+      return res.status(400).json({
+        message: err.meta?.cause,
+      });
+    }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+      error: err,
     });
   }
 };
