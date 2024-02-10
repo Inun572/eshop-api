@@ -1,17 +1,16 @@
-import express from 'express';
+import createApplication, { json } from 'express';
 import routes from './app/routes/routes';
 import { config } from 'dotenv';
 
 config();
 
 const PORT = process.env.PORT;
-const app = express();
+const app = createApplication();
 
-app.use(express.json());
+app.use(json());
 
 app.use('/api', routes);
 
-app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
