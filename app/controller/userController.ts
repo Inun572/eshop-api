@@ -4,6 +4,7 @@ import {
   getUsers,
   updateUser as updateData,
   deleteUser as deleteData,
+  findUserById,
 } from '../services/userServices';
 import { hashPassword } from '../utils/hashing';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -13,6 +14,27 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const user = await getUsers();
     res.json({
       message: 'Success get all users',
+      data: user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const user = await findUserById(Number(req.params.id));
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      });
+    }
+
+    res.json({
+      message: 'Success get user by id',
       data: user,
     });
   } catch (err) {

@@ -38,6 +38,14 @@ export const findUser = async (emailOrUsername: string) => {
   });
 };
 
+export const findUserById = async (id: number) => {
+  return await prisma.user.findFirst({
+    where: {
+      id,
+    },
+  });
+};
+
 export const addUser = async (data: RegisterData) => {
   return await prisma.user.create({
     data: {
