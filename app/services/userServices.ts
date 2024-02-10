@@ -1,4 +1,5 @@
 import prisma from '../../app/config/db';
+import { RegisterData } from '../../types/user/user';
 
 export const getUsers = async () => {
   return await prisma.user.findMany({
@@ -22,6 +23,19 @@ export const getUserByEmail = async (email: string) => {
   return await prisma.user.findUnique({
     where: {
       email,
+    },
+  });
+};
+
+export const addUser = async (data: RegisterData) => {
+  return await prisma.user.create({
+    data: {
+      fullname: data.fullname,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      address: data.address,
+      role_id: data.roleId,
     },
   });
 };
