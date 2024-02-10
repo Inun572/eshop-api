@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { findToken } from '../services/authServices';
+import {
+  findPermissionsByRole,
+  findToken,
+} from '../services/authServices';
 import { verifyToken } from '../utils/token';
 
 export const validateToken = async (
@@ -34,4 +37,34 @@ export const validateToken = async (
   req.user = verifiedToken.user;
 
   next();
+};
+
+export const authorizePermission = (permission: string) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    if (!req.user) {
+      return res.status(401).json({
+        message: 'Unauthorized',
+      });
+    }
+
+    const permissionRecord = await findPermissionsByRole(
+      req.user.role_id
+    );
+
+    const permissions = permissionRecord.map(
+      (record) => record.permission.name
+    );
+
+    if (permissions.includes(permission)) {
+      next();
+    } else {
+      return res.status(403).json({
+        message: 'Forbidden',
+      });
+    }
+  };
 };
