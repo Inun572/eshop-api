@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getUserByEmail } from '../services/userServices';
+import { findUser } from '../services/userServices';
 import bcrypt from 'bcrypt';
 
 export const validateLoginRequest = async (
@@ -23,9 +23,7 @@ export const validateLoginRequest = async (
   }
 
   if (/^\S+@\S+\.\S+$/.test(email) === false) {
-    return res
-      .status(400)
-      .json({ message: 'Invalid email format' });
+    return res.status(400).json({ message: 'Invalid email format' });
   }
 
   // if (
@@ -39,18 +37,14 @@ export const validateLoginRequest = async (
   //   });
   // }
 
-  const user = await getUserByEmail(email);
+  const user = await findUser(email);
 
   if (!user) {
-    return res
-      .status(400)
-      .json({ message: 'User not found' });
+    return res.status(400).json({ message: 'User not found' });
   }
 
   if (!(await bcrypt.compare(password, user.password))) {
-    return res
-      .status(400)
-      .json({ message: 'Password incorrect' });
+    return res.status(400).json({ message: 'Password incorrect' });
   }
 
   req.user = {
