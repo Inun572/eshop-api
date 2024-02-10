@@ -1,6 +1,5 @@
 import prisma from '../config/db';
 import { getToken } from '../utils/token';
-import { UserPublicData } from '../../types/auth';
 
 export const createToken = async (user: UserPublicData) => {
   const token = getToken(user);

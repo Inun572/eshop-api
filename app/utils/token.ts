@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
-import { UserPublicData } from '../../types/auth';
 
 config();
 
