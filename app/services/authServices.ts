@@ -30,3 +30,16 @@ export const findToken = async (token: string) => {
     },
   });
 };
+
+export const findPermissionsByRole = async (
+  roleId: number
+) => {
+  return await prisma.permissionRole.findMany({
+    where: {
+      role_id: roleId,
+    },
+    include: {
+      permission: true,
+    },
+  });
+};
