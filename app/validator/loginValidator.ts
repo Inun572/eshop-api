@@ -22,8 +22,10 @@ export const validateLoginRequest = async (
     });
   }
 
-  if (/^\S+@\S+\.\S+$/.test(email) === false) {
-    return res.status(400).json({ message: 'Invalid email format' });
+  if (email) {
+    if (/^\S+@\S+\.\S+$/.test(email) === false) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
   }
 
   // if (
@@ -37,7 +39,7 @@ export const validateLoginRequest = async (
   //   });
   // }
 
-  const user = await findUser(email);
+  const user = await findUser(email ?? username, true);
 
   if (!user) {
     return res.status(400).json({ message: 'User not found' });
