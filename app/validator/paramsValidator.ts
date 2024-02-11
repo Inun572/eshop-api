@@ -4,14 +4,14 @@ export const validateParams = (param: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.params[param]) {
       return res.status(400).json({
-        message: 'Parameter is required',
+        message: `Parameter ${param} is required`,
       });
     }
 
     if (param === 'id') {
       if (isNaN(Number(req.params[param]))) {
         return res.status(400).json({
-          message: 'Please provide a valid parameters',
+          message: `Please provide a valid ${param}`,
         });
       }
     }
