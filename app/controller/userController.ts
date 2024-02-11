@@ -69,19 +69,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    if (!req.params.id) {
-      return res.status(400).json({
-        message: 'Id is required',
-      });
-    }
     const id = Number(req.params.id);
-
-    if (isNaN(id)) {
-      return res.status(400).json({
-        message: 'Id is required',
-      });
-    }
-
     await updateData(id, req.body);
 
     res.json({
@@ -102,19 +90,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    if (!req.params.id) {
-      return res.status(400).json({
-        message: 'Id is required',
-      });
-    }
     const id = Number(req.params.id);
-
-    if (isNaN(id)) {
-      return res.status(400).json({
-        message: 'Id is required',
-      });
-    }
-
     await deleteData(id);
 
     res.json({
