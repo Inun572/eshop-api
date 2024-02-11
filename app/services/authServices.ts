@@ -3,7 +3,6 @@ import { getToken } from '../utils/token';
 
 export const createToken = async (user: UserPublicData) => {
   const token = getToken(user);
-  console.log(token);
   return await prisma.token.create({
     data: {
       token,
@@ -31,9 +30,7 @@ export const findToken = async (token: string) => {
   });
 };
 
-export const findPermissionsByRole = async (
-  roleId: number
-) => {
+export const findPermissionsByRole = async (roleId: number) => {
   return await prisma.permissionRole.findMany({
     where: {
       role_id: roleId,
