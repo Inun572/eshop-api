@@ -4,9 +4,10 @@ import {
   validateToken,
 } from '../middlewares/authMiddleware';
 import {
-  deleteUser,
+  deactiveUser,
   getAllUsers,
   getUserById,
+  hardDeleteUser,
   registerUser,
   updateUser,
 } from '../controller/userController';
@@ -40,12 +41,20 @@ router.put(
   updateUser
 );
 
-router.delete(
-  '/:id',
+router.put(
+  '/deactive/:id',
   validateToken,
   authorizePermission('delete_user'),
   validateParams('id'),
-  deleteUser
+  deactiveUser
+);
+
+router.delete(
+  '/destroy/:id',
+  validateToken,
+  authorizePermission('delete_user'),
+  validateParams('id'),
+  hardDeleteUser
 );
 
 export default router;

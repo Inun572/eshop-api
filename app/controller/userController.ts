@@ -3,7 +3,8 @@ import {
   addUser,
   getUsers,
   updateUser as updateData,
-  deleteUser as deleteData,
+  hardDeleteUser as hardDeleteData,
+  softDeleteUser,
   findUserById,
 } from '../services/userServices';
 import { hashPassword } from '../utils/hashing';
@@ -88,10 +89,31 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deactiveUser = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    await deleteData(id);
+    await softDeleteUser(id);
+
+    res.json({
+      message: 'Success deactive user',
+    });
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError) {
+      return res.status(400).json({
+        message: err.meta?.cause,
+      });
+    }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export const hardDeleteUser = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    await hardDeleteData(id);
 
     res.json({
       message: 'Success delete user',

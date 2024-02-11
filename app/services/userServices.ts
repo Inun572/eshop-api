@@ -35,6 +35,19 @@ export const findUser = async (emailOrUsername: string) => {
         },
       ],
     },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      fullname: true,
+      is_active: true,
+      role: {
+        select: {
+          name: true,
+        },
+      },
+      products: true,
+    },
   });
 };
 
@@ -76,7 +89,18 @@ export const updateUser = async (id: number, data: UpdateDataUser) => {
   });
 };
 
-export const deleteUser = async (id: number) => {
+export const softDeleteUser = async (id: number) => {
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      is_active: false,
+    },
+  });
+};
+
+export const hardDeleteUser = async (id: number) => {
   return await prisma.user.delete({
     where: {
       id,
