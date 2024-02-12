@@ -1,59 +1,54 @@
 import { NextFunction, Request, Response } from 'express';
-import {
-  findPermissionsByRole,
-  findToken,
-} from '../services/authServices';
+import { findPermissionsByRole, findToken } from '../services/authServices';
 import { verifyToken } from '../utils/token';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 export const validateToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization;
+  try {
+    const token = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({
-      message: 'Unauthorized',
-    });
+    if (!token) {
+      return res.status(401).json({
+        message: 'Unauthorized',
+      });
+    }
+
+    const verifiedToken = await findToken(token);
+
+    if (!verifiedToken) {
+      return res.status(401).json({
+        message: 'Invalid token',
+      });
+    }
+
+    verifyToken(token);
+
+    req.user = verifiedToken.user;
+
+    next();
+  } catch (err) {
+    if (err instanceof TokenExpiredError) {
+      return res.status(401).json({
+        message: 'Token expired',
+      });
+    }
+    next(err);
   }
-
-  const verifiedToken = await findToken(token);
-
-  if (!verifiedToken) {
-    return res.status(401).json({
-      message: 'Invalid token',
-    });
-  }
-
-  const isExpired = verifyToken(token);
-
-  if (!isExpired) {
-    return res.status(401).json({
-      message: 'Token expired',
-    });
-  }
-
-  req.user = verifiedToken.user;
-
-  next();
 };
 
 export const authorizePermission = (permission: string) => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({
         message: 'Unauthorized',
       });
     }
 
-    const permissionRecord = await findPermissionsByRole(
-      req.user.role_id
-    );
+    const permissionRecord = await findPermissionsByRole(req.user.role_id);
 
     const permissions = permissionRecord.map(
       (record) => record.permission.name
