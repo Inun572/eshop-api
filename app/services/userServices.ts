@@ -9,6 +9,7 @@ export const getUsers = async () => {
       email: true,
       fullname: true,
       is_active: true,
+      role_id: true,
       role: {
         select: {
           name: true,
@@ -40,7 +41,9 @@ export const findUser = async (emailOrUsername: string) => {
       username: true,
       email: true,
       fullname: true,
+      password: true,
       is_active: true,
+      role_id: true,
       role: {
         select: {
           name: true,
@@ -55,6 +58,20 @@ export const findUserById = async (id: number) => {
   return await prisma.user.findFirst({
     where: {
       id,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      fullname: true,
+      is_active: true,
+      role_id: true,
+      role: {
+        select: {
+          name: true,
+        },
+      },
+      products: true,
     },
   });
 };
