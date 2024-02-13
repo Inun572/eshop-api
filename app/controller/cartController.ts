@@ -1,5 +1,14 @@
 import { Request, Response } from 'express';
-import { addItem, findCartByUserId, getCarts } from '../services/cartServices';
+import {
+  addItem,
+  findCartByUserId,
+  getCarts,
+  removeItem,
+  updateQuantity,
+} from '../services/cartServices';
+import NotFoundError from '../errors/notFoundError';
+import { json } from 'stream/consumers';
+import { th } from '@faker-js/faker';
 
 export const getAllCarts = async (req: Request, res: Response) => {
   try {
@@ -70,10 +79,66 @@ export const addItemToCart = async (req: Request, res: Response) => {
 
 export const updateQuantityItemInCart = async (req: Request, res: Response) => {
   try {
-  } catch (err) {}
+    const { productId, quantity } = req.body;
+    const user = req.user;
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const cart = await findCartByUserId(user.id);
+
+    if (!cart) {
+      throw new NotFoundError('Cart not found');
+    }
+
+    await updateQuantity(cart.id, productId, quantity);
+
+    res.json({
+      message: 'Success update quantity item in cart',
+    });
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      return res.status(err.statusCode).json({
+        message: err.message,
+      });
+    }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
 };
 
 export const removeItemFromCart = async (req: Request, res: Response) => {
   try {
-  } catch (err) {}
+    const { productId } = req.params;
+    const user = req.user;
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const cart = await findCartByUserId(user.id);
+
+    if (!cart) {
+      throw new NotFoundError('Cart not found');
+    }
+
+    await removeItem(cart.id, Number(productId));
+
+    res.json({
+      message: 'Success remove item from cart',
+    });
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      return res.status(err.statusCode).json({
+        message: err.message,
+      });
+    }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
 };

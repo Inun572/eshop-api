@@ -3,6 +3,8 @@ import {
   addItemToCart,
   getAllCarts,
   getCartByUserId,
+  removeItemFromCart,
+  updateQuantityItemInCart,
 } from '../controller/cartController';
 import { validateLoginRequest } from '../validator/loginValidator';
 import {
@@ -14,17 +16,10 @@ import { validateParams } from '../validator/paramsValidator';
 
 const router = Router();
 
-router.get(
-  '/',
-  validateLoginRequest,
-  validateToken,
-  authorizePermission('browse_cart'),
-  getAllCarts
-);
+router.get('/', validateToken, authorizePermission('browse_cart'), getAllCarts);
 
 router.get(
   '/:id',
-  validateLoginRequest,
   validateToken,
   authorizePermission('read_cart'),
   validateParams('id'),
@@ -33,10 +28,26 @@ router.get(
 
 router.post(
   '/',
-  validateLoginRequest,
+  validateToken,
   authorizePermission('add_cart'),
   validateItemToCart,
   addItemToCart
+);
+
+router.put(
+  '/',
+  validateToken,
+  authorizePermission('update_cart'),
+  validateItemToCart,
+  updateQuantityItemInCart
+);
+
+router.delete(
+  '/:id',
+  validateToken,
+  authorizePermission('delete_cart'),
+  validateParams('id'),
+  removeItemFromCart
 );
 
 export default router;

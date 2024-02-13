@@ -90,9 +90,7 @@ export const updateQuantity = async (
     throw new NotFoundError('Product not found in cart');
   }
 
-  const newQuantity = itemInCart.quantity + quantity;
-
-  if (stock < newQuantity) {
+  if (stock < quantity) {
     throw new NotFoundError('Quantity not available');
   }
 
@@ -104,7 +102,18 @@ export const updateQuantity = async (
       },
     },
     data: {
-      quantity: newQuantity,
+      quantity,
+    },
+  });
+};
+
+export const removeItem = async (cartId: number, productId: number) => {
+  return await prisma.cartItem.delete({
+    where: {
+      cart_id_product_id: {
+        cart_id: cartId,
+        product_id: productId,
+      },
     },
   });
 };
