@@ -18,3 +18,11 @@ export const updateProductImages = async (
     data,
   });
 };
+
+export const deleteProductImages = async (imageId: number) => {
+  return await prisma.image.delete({
+    where: {
+      id: imageId,
+    },
+  });
+};
