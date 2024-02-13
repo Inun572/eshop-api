@@ -9,6 +9,7 @@ import {
 } from '../services/userServices';
 import { hashPassword } from '../utils/hashing';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { registerUserTransaction } from '../services/transactions/userTransactions';
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -52,7 +53,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const hashedPassword = await hashPassword(password);
 
-    await addUser({
+    await registerUserTransaction({
       ...req.body,
       password: hashedPassword,
       roleId,
