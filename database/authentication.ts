@@ -11,6 +11,9 @@ export const Permission = {
   ADD_USER: 'add_user',
   DELETE_USER: 'delete_user',
 
+  EDIT_SELF: 'edit_self',
+  DELETE_SELF: 'delete_self',
+
   BROWSE_ALL_PRODUCTS: 'browse_all_products',
   READ_ALL_PRODUCT: 'read_all_product',
   EDIT_ALL_PRODUCT: 'edit_all_product',
@@ -74,6 +77,12 @@ export const PermissionAssignment = {
   ],
 
   [Role.SELLER]: [
+    Permission.BROWSE_USERS,
+    Permission.READ_USER,
+
+    Permission.EDIT_SELF,
+    Permission.DELETE_SELF,
+
     Permission.BROWSE_ALL_PRODUCTS,
     Permission.READ_ALL_PRODUCT,
 
