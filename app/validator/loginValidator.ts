@@ -16,7 +16,10 @@ const loginSchema = z.object({
     })
     .optional(),
   password: z
-    .string()
+    .string({
+      invalid_type_error: 'Please provide a valid password',
+      required_error: 'Password is required',
+    })
     .min(8, {
       message: 'Password must be at least 8 characters',
     })
