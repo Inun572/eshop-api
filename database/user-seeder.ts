@@ -13,10 +13,8 @@ const main = async () => {
         email: fakerID_ID.internet.email().toLowerCase(),
         fullname: fakerID_ID.person.fullName(),
         address: fakerID_ID.location.city(),
-        password: await hashPassword('password'),
-        role_id:
-          roles[Math.floor(Math.random() * roles.length)]
-            .id,
+        password: await hashPassword(`Password${i}`),
+        role_id: roles[Math.floor(Math.random() * roles.length)].id,
       },
     });
   }
