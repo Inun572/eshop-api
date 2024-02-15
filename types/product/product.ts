@@ -3,8 +3,8 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
-  category_id: number;
-  seller_id: number;
+  categoryId: number;
+  sellerId: number;
 }
 
 export interface ProductImage {

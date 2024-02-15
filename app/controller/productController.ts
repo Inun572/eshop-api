@@ -50,7 +50,11 @@ export const getProductById = async (req: Request, res: Response) => {
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { images, ...product } = req.body.images;
+    const { images, ...productBody } = req.body;
+    const product = {
+      ...productBody,
+      sellerId: req.user?.id,
+    };
 
     await addProductAndImages(product, images);
 
@@ -72,7 +76,7 @@ export const createProduct = async (req: Request, res: Response) => {
 export const editProductById = async (req: Request, res: Response) => {
   try {
     const productId = Number(req.params.id);
-    const { images, ...product } = req.body.images;
+    const { images, ...product } = req.body;
 
     const productById = await findProduct(productId);
 

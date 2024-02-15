@@ -23,7 +23,7 @@ router.get('/:id', validateParams('id'), getProductById);
 router.post(
   '/',
   validateToken,
-  authorizePermission('add_product'),
+  authorizePermission('add_own_product'),
   validateProductInput,
   createProduct
 );

@@ -26,10 +26,7 @@ export const editProductAndImages = (
   });
 };
 
-export const addProductAndImages = (
-  product: Product,
-  images: ProductImage[]
-) => {
+export const addProductAndImages = (product: Product, images: string[]) => {
   return prisma.$transaction(async (tx) => {
     const newProduct = await addProduct(product);
 
@@ -37,7 +34,14 @@ export const addProductAndImages = (
       throw new TransactionError('Transaction has failed to add product');
     }
 
-    const productImages = await addProductImages(images);
+    const imagesData: ProductImage[] = images.map((image) => {
+      return {
+        image_url: image,
+        product_id: newProduct.id,
+      };
+    });
+
+    const productImages = await addProductImages(imagesData);
 
     if (!productImages) {
       throw new TransactionError('Transction has failed to add product images');

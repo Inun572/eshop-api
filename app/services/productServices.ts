@@ -4,9 +4,22 @@ import prisma from '../config/db';
 export const getProducts = async () => {
   return await prisma.product.findMany({
     include: {
-      category: true,
-      user: true,
-      images: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      user: {
+        select: {
+          username: true,
+          address: true,
+        },
+      },
+      images: {
+        select: {
+          image_url: true,
+        },
+      },
     },
   });
 };
@@ -31,8 +44,8 @@ export const addProduct = async (data: Product) => {
       description: data.description,
       price: data.price,
       stock: data.stock,
-      category_id: data.category_id,
-      seller_id: data.seller_id,
+      category_id: data.categoryId,
+      seller_id: data.sellerId,
     },
   });
 };
