@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import {
-  addItem,
   findCartByUserId,
   getCarts,
-  removeItem,
   updateQuantity,
 } from '../services/cartServices';
 import NotFoundError from '../errors/notFoundError';
-import { json } from 'stream/consumers';
-import { th } from '@faker-js/faker';
+import {
+  addItemTransaction,
+  removeItemTransaction,
+} from '../services/transactions/cartTransactions';
 
 export const getAllCarts = async (req: Request, res: Response) => {
   try {
@@ -65,12 +65,17 @@ export const addItemToCart = async (req: Request, res: Response) => {
       });
     }
 
-    await addItem(cart.id, productId, quantity);
+    await addItemTransaction(cart.id, productId, quantity);
 
     res.json({
       message: 'Success add item to cart',
     });
   } catch (err) {
+    if (err instanceof NotFoundError) {
+      return res.status(err.statusCode).json({
+        message: err.message,
+      });
+    }
     res.status(500).json({
       message: 'Internal Server Error',
     });
@@ -112,7 +117,7 @@ export const updateQuantityItemInCart = async (req: Request, res: Response) => {
 
 export const removeItemFromCart = async (req: Request, res: Response) => {
   try {
-    const { productId } = req.params;
+    const productId = req.params.id;
     const user = req.user;
 
     if (!user) {
@@ -125,7 +130,7 @@ export const removeItemFromCart = async (req: Request, res: Response) => {
       throw new NotFoundError('Cart not found');
     }
 
-    await removeItem(cart.id, Number(productId));
+    await removeItemTransaction(cart.id, Number(productId));
 
     res.json({
       message: 'Success remove item from cart',
@@ -136,7 +141,6 @@ export const removeItemFromCart = async (req: Request, res: Response) => {
         message: err.message,
       });
     }
-
     res.status(500).json({
       message: 'Internal Server Error',
     });

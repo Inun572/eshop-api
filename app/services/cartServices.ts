@@ -4,8 +4,32 @@ import { findProduct } from './productServices';
 
 export const getCarts = async () => {
   return await prisma.cart.findMany({
-    include: {
-      items: true,
+    select: {
+      id: true,
+      user_id: true,
+      user: {
+        select: {
+          username: true,
+          address: true,
+        },
+      },
+      total_items: true,
+      total_amount: true,
+      items: {
+        select: {
+          product_id: true,
+          product: {
+            select: {
+              name: true,
+              price: true,
+            },
+          },
+          quantity: true,
+          total: true,
+        },
+      },
+      createdAt: true,
+      updatedAt: true,
     },
   });
 };
@@ -15,12 +39,32 @@ export const findCartByUserId = async (userId: number) => {
     where: {
       user_id: userId,
     },
-    include: {
-      items: {
-        include: {
-          product: true,
+    select: {
+      id: true,
+      user_id: true,
+      user: {
+        select: {
+          username: true,
+          address: true,
         },
       },
+      total_items: true,
+      total_amount: true,
+      items: {
+        select: {
+          product_id: true,
+          product: {
+            select: {
+              name: true,
+              price: true,
+            },
+          },
+          quantity: true,
+          total: true,
+        },
+      },
+      createdAt: true,
+      updatedAt: true,
     },
   });
 };
