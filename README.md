@@ -1,6 +1,41 @@
 # REST API Documentation
 
-## How to use it
+## Seting up this API
+
+### Initial Setup
+
+- Clone this project.
+- Go to the directory.
+
+```cmd
+cd eshop-api
+```
+
+- And then `npm install` to install all dependecies.
+
+### Generate your own database
+
+- Prisma needs some information about your database. So, let we create `.env` file, copy inside of `.env.example` and changes this part by your database credential. In this project we will use MySQL.
+
+```
+DATABASE_URL = "mysql://user:password@localhost:3306/database_name"
+```
+
+- Also you can setup other variable in env file for later use.
+- Migrating our model into database, we should run `npm run migrate` or `npx prisma migrate dev`.
+- Last, `npm run dev` for running our application.
+
+### Dummy Data
+
+- You can run seeder file in `database` folder for filling up database, feel free to adjust how much data you need.
+
+### Setup for Payment Gateway
+
+- We would using a dummy payment gateway, just clone this repository below, and setup the server at another port. Maka sure that application server running before doing payments.
+
+```bash
+git clone https://github.com/harrymahardhika/dummy-payment-gateway.git
+```
 
 ## Authentication
 
@@ -36,8 +71,6 @@
 - Description: Register a new user.
 - Request parameters: None
 - Request body:
-  - `fullname`: The user's fullname.
-  - `email`: The user's email.
   - `username`: The user's username.
   - `password`: The user's password.
 - Response: The newly created user object.
@@ -113,6 +146,14 @@
 
 - Description: Retrieve a list of all products.
 - Request parameters: None
+- Request query:
+
+  - `/api/product?search=` : search product by name
+  - `/api/product?sort=` : sort product by product field, default is sort by id
+  - `/api/product?order=` : order by `asc` or `desc`
+  - `/api/product?page=` : choose what page that will show
+  - `/api/product?limit=` : limit products for one page
+
 - Request body: None
 - Response: An array of product objects.
 
@@ -124,6 +165,15 @@
 - Request body: None
 - Response: The product object.
 
+### POST /api/products/admin
+
+- Description: Admin endpoint to create a new product.
+- Request parameters: None
+- Request body:
+  - `name`: The name of the product.
+  - `category_id`: The ID of the category the product belongs to.
+- Response: The newly created product object.
+
 ### POST /api/products/
 
 - Description: Create a new product.
@@ -133,6 +183,14 @@
   - `category_id`: The ID of the category the product belongs to.
 - Response: The newly created product object.
 
+### PUT /api/products/admin:id
+
+- Description: Admin endpoint to update a specific product by ID.
+- Request parameters:
+  - `id`: The ID of the product.
+- Request body: The fields to update.
+- Response: The updated product object.
+
 ### PUT /api/products/:id
 
 - Description: Update a specific product by ID.
@@ -141,7 +199,15 @@
 - Request body: The fields to update.
 - Response: The updated product object.
 
-### PUT /api/products/delete/:id
+### DELETE /api/products/admin/delete/:id
+
+- Description: Admin endpoint to soft delete a specific product by ID.
+- Request parameters:
+  - `id`: The ID of the product.
+- Request body: None
+- Response: The updated product object.
+
+### DELETE /api/products/delete/:id
 
 - Description: Soft delete a specific product by ID.
 - Request parameters:
@@ -149,15 +215,30 @@
 - Request body: None
 - Response: The updated product object.
 
-### DELETE /api/products/destroy/:id
+### DELETE /api/products/admin/destroy/:id
 
-- Description: Permanently delete a specific product by ID.
+- Description: Admin endpoint to permanently delete a specific product by ID.
 - Request parameters:
   - `id`: The ID of the product.
 - Request body: None
 - Response: A success message.
 
 ## Carts
+
+### GET /api/carts/admin
+
+- Description: Admin endpoint to retrieve a list of all carts.
+- Request parameters: None
+- Request body: None
+- Response: An array of cart objects.
+
+### GET /api/carts/admin/:id
+
+- Description: Admin endpoint to retrieve a specific cart by ID.
+- Request parameters:
+  - `id`: The ID of the cart.
+- Request body: None
+- Response: The cart object.
 
 ### GET /api/carts/
 
@@ -166,13 +247,13 @@
 - Request body: None
 - Response: An array of cart objects.
 
-### GET /api/carts/:id
+### POST /api/carts/admin
 
-- Description: Retrieve a specific cart by ID.
-- Request parameters:
-  - `id`: The ID of the cart.
-- Request body: None
-- Response: The cart object.
+- Description: Admin endpoint to create a new cart.
+- Request parameters: None
+- Request body:
+  - `user_id`: The ID of the user the cart belongs to.
+- Response: The newly created cart object.
 
 ### POST /api/carts/
 
@@ -182,6 +263,14 @@
   - `user_id`: The ID of the user the cart belongs to.
 - Response: The newly created cart object.
 
+### PUT /api/carts/admin
+
+- Description: Admin endpoint to update a specific cart by ID.
+- Request parameters:
+  - `id`: The ID of the cart.
+- Request body: The fields to update.
+- Response: The updated cart object.
+
 ### PUT /api/carts/
 
 - Description: Update a specific cart by ID.
@@ -190,10 +279,76 @@
 - Request body: The fields to update.
 - Response: The updated cart object.
 
+### DELETE /api/carts/admin/:id
+
+- Description: Admin endpoint to delete a specific cart by ID.
+- Request parameters:
+  - `id`: The ID of the cart.
+- Request body: None
+- Response: A success message.
+
 ### DELETE /api/carts/:id
 
 - Description: Delete a specific cart by ID.
 - Request parameters:
   - `id`: The ID of the cart.
+- Request body: None
+- Response: A success message.
+
+## Orders
+
+### GET /api/orders/admin
+
+- Description: Admin endpoint to retrieve a list of all orders.
+- Request parameters: None
+- Request body: None
+- Response: An array of order objects.
+
+### GET /api/orders/seller
+
+- Description: Seller endpoint to retrieve a list of all orders.
+- Request parameters: None
+- Request body: None
+- Response: An array of order objects.
+
+### GET /api/orders/
+
+- Description: Retrieve a list of all orders.
+- Request parameters: None
+- Request body: None
+- Response: An array of order objects.
+
+### POST /api/orders/create
+
+- Description: Create a new order.
+- Request parameters: None
+- Request body:
+  - `user_id`: The ID of the user the order belongs to.
+  - `product_id`: The ID of the product the order is for.
+- Response: The newly created order object.
+
+### POST /api/orders/payment
+
+- Description: Process a payment for an order.
+- Request parameters: None
+- Request body:
+  - `order_id`: The ID of the order to process payment for.
+  - `payment_method`: The method of payment.
+- Response: A success message.
+
+### PUT /api/orders/updateStatus/:id
+
+- Description: Update the status of a specific order by ID.
+- Request parameters:
+  - `id`: The ID of the order.
+- Request body:
+  - `status`: The new status of the order.
+- Response: The updated order object.
+
+### DELETE /api/orders/cancel/:id
+
+- Description: Cancel a specific order by ID.
+- Request parameters:
+  - `id`: The ID of the order.
 - Request body: None
 - Response: A success message.
