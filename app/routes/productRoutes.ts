@@ -44,7 +44,7 @@ router.put(
   validateParams('id'),
   softDeleteProduct
 );
-router.put(
+router.delete(
   '/destroy/:id',
   validateToken,
   authorizePermission('delete_product'),
