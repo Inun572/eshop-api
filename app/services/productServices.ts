@@ -30,9 +30,22 @@ export const findProduct = async (id: number) => {
       id,
     },
     include: {
-      category: true,
-      user: true,
-      images: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      user: {
+        select: {
+          username: true,
+          address: true,
+        },
+      },
+      images: {
+        select: {
+          image_url: true,
+        },
+      },
     },
   });
 };
