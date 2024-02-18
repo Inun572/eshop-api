@@ -22,6 +22,9 @@ const registerSchema = z.object({
   address: z.string({
     errorMap: () => ({ message: 'Address is required' }),
   }),
+  role_id: z.number({
+    errorMap: () => ({ message: 'Role ID is required' }),
+  }),
 });
 
 export const validateRegisterRequest = async (

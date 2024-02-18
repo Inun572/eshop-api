@@ -49,14 +49,12 @@ export const getUserById = async (req: Request, res: Response) => {
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { password } = req.body;
-    const roleId = 3; // 3 for reguler user
 
     const hashedPassword = await hashPassword(password);
 
     await registerUserTransaction({
       ...req.body,
       password: hashedPassword,
-      roleId,
     });
 
     res.json({
