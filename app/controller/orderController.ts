@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
-import { createOrderTransaction } from '../services/transactions/orderTransactions';
+import {
+  createOrderTransaction,
+  paymentOrderTransaction,
+} from '../services/transactions/orderTransactions';
 import TransactionError from '../errors/transactionError';
 import NotFoundError from '../errors/notFoundError';
 import {
@@ -95,10 +98,59 @@ export const createOrder = async (req: Request, res: Response) => {
     });
   } catch (err) {
     if (err instanceof TransactionError || err instanceof NotFoundError) {
-      res.status(err.statusCode).json({
+      return res.status(err.statusCode).json({
         message: err.message,
       });
     }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export const paymentOrder = async (req: Request, res: Response) => {
+  try {
+    const { orderId, ...paymentData } = req.body;
+    const userId = req.user?.id;
+
+    const isOrderExits = await getOrdersByUser(userId as number);
+
+    if (isOrderExits.filter((order) => order.id === orderId).length === 0) {
+      throw new NotFoundError('Order not found');
+    }
+
+    const result = await paymentOrderTransaction(orderId, paymentData);
+
+    res.json({
+      message: `Success payment order with ID ${result.id}`,
+      data: result.paymentResult.data,
+    });
+  } catch (err) {
+    if (err instanceof TransactionError || err instanceof NotFoundError) {
+      return res.status(err.statusCode).json({
+        message: err.message,
+      });
+    }
+
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export const updateStatusOrder = async (req: Request, res: Response) => {
+  try {
+  } catch (err) {
+    res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export const cancelOrder = async (req: Request, res: Response) => {
+  try {
+  } catch (err) {
     res.status(500).json({
       message: 'Internal Server Error',
     });

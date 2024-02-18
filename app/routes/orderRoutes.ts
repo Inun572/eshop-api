@@ -5,11 +5,16 @@ import {
 } from '../middlewares/authMiddleware';
 import { Permission } from '../../database/authentication';
 import {
+  cancelOrder,
   createOrder,
   getAllOrderSeller,
   getAllOrderUser,
   getAllOrders,
+  paymentOrder,
+  updateStatusOrder,
 } from '../controller/orderController';
+import { validateParams } from '../validator/paramsValidator';
+import { validatePaymentRequest } from '../validator/orderValidator';
 
 const router = Router();
 
@@ -39,6 +44,30 @@ router.post(
   validateToken,
   authorizePermission(Permission.ADD_OWN_ORDER),
   createOrder
+);
+
+router.post(
+  '/payment',
+  validateToken,
+  authorizePermission(Permission.EDIT_OWN_ORDER),
+  validatePaymentRequest,
+  paymentOrder
+);
+
+router.put(
+  '/seller/:id',
+  validateToken,
+  authorizePermission(Permission.EDIT_OWN_ORDER),
+  validateParams,
+  updateStatusOrder
+);
+
+router.delete(
+  '/cancel/:id',
+  validateToken,
+  authorizePermission(Permission.DELETE_OWN_ORDER),
+  validateParams('id'),
+  cancelOrder
 );
 
 export default router;
