@@ -184,7 +184,6 @@ export const removeItemFromCart = async (req: Request, res: Response) => {
 
     if (user.role_id === 1) {
       const { userId } = req.body;
-      console.log(userId);
       const cart = await findCartByUserId(userId);
 
       if (!cart) {
@@ -210,7 +209,6 @@ export const removeItemFromCart = async (req: Request, res: Response) => {
       message: 'Success remove item from cart',
     });
   } catch (err) {
-    console.log(err);
     if (err instanceof NotFoundError || err instanceof TransactionError) {
       return res.status(err.statusCode).json({
         message: err.message,
