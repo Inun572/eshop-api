@@ -50,6 +50,14 @@ export const findProduct = async (id: number) => {
   });
 };
 
+export const findProductBySellerId = async (id: number) => {
+  return await prisma.product.findMany({
+    where: {
+      seller_id: id,
+    },
+  });
+};
+
 export const addProduct = async (data: Product) => {
   return await prisma.product.create({
     data: {

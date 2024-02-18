@@ -10,44 +10,71 @@ import {
   authorizePermission,
   validateToken,
 } from '../middlewares/authMiddleware';
-import { validateProductInput } from '../validator/productValidator';
+import {
+  validateEditProductInput,
+  validateProductInput,
+} from '../validator/productValidator';
 import {
   hardDeleteProduct,
   softDeleteProduct,
 } from '../services/productServices';
+import { Permission } from '../../database/authentication';
 
 const router = Router();
 
 router.get('/', getAllProducts);
 router.get('/:id', validateParams('id'), getProductById);
 router.post(
+  '/admin',
+  validateToken,
+  authorizePermission(Permission.ADD_ALL_PRODUCT),
+  validateProductInput,
+  createProduct
+);
+
+router.post(
   '/',
   validateToken,
-  authorizePermission('add_own_product'),
+  authorizePermission(Permission.ADD_OWN_PRODUCT),
   validateProductInput,
   createProduct
 );
 
 router.put(
+  '/admin:id',
+  validateToken,
+  authorizePermission(Permission.EDIT_ALL_PRODUCT),
+  validateParams('id'),
+  validateEditProductInput,
+  editProductById
+);
+router.put(
   '/:id',
   validateToken,
-  authorizePermission('edit_product'),
+  authorizePermission(Permission.EDIT_OWN_PRODUCT),
   validateParams('id'),
-  validateProductInput,
+  validateEditProductInput,
   editProductById
 );
 
-router.put(
-  '/delete/:id',
+router.delete(
+  '/admin/delete/:id',
   validateToken,
-  authorizePermission('delete_product'),
+  authorizePermission(Permission.DELETE_ALL_PRODUCT),
   validateParams('id'),
   softDeleteProduct
 );
 router.delete(
-  '/destroy/:id',
+  '/delete/:id',
   validateToken,
-  authorizePermission('delete_product'),
+  authorizePermission(Permission.DELETE_OWN_PRODUCT),
+  validateParams('id'),
+  softDeleteProduct
+);
+router.delete(
+  '/admin/destroy/:id',
+  validateToken,
+  authorizePermission(Permission.DELETE_ALL_PRODUCT),
   validateParams('id'),
   hardDeleteProduct
 );

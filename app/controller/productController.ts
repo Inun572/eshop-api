@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { findProduct, getProducts } from '../services/productServices';
+import {
+  findProduct,
+  findProductBySellerId,
+  getProducts,
+} from '../services/productServices';
 import TransactionError from '../errors/transactionError';
 import {
   addProductAndImages,
@@ -78,9 +82,31 @@ export const editProductById = async (req: Request, res: Response) => {
     const productId = Number(req.params.id);
     const { images, ...product } = req.body;
 
-    const productById = await findProduct(productId);
+    const user = req.user;
 
-    if (!productById) {
+    if (user?.role_id !== 1) {
+      const productData = await findProductBySellerId(user?.id as number);
+
+      if (productData.length === 0) {
+        return res.status(403).json({
+          message: 'You dont have any product yet',
+        });
+      }
+
+      const isProductExist = productData.filter(
+        (product) => product.id === productId
+      );
+
+      if (isProductExist.length === 0) {
+        return res.status(400).json({
+          message: 'Product not found',
+        });
+      }
+    }
+
+    const productData = await findProduct(productId);
+
+    if (!productData) {
       return res.status(400).json({
         message: 'Product not found',
       });

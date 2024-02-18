@@ -10,10 +10,14 @@ export const editProductAndImages = (
   images: ProductImage[]
 ) => {
   return prisma.$transaction(async (tx) => {
-    const newProduct = await updateProduct(productId, product);
+    const updatedProduct = await updateProduct(productId, product);
 
-    if (!newProduct) {
+    if (!updatedProduct) {
       throw new TransactionError('Transaction has failed to update product');
+    }
+
+    if (images === undefined) {
+      return updatedProduct;
     }
 
     const productImages = await updateProductImages(productId, images);
@@ -23,6 +27,8 @@ export const editProductAndImages = (
         'Transction has failed to update product images'
       );
     }
+
+    return updatedProduct;
   });
 };
 
