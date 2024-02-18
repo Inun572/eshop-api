@@ -1,9 +1,5 @@
 import prisma from '../app/config/db';
-import {
-  Role,
-  Permission,
-  PermissionAssignment,
-} from './authentication';
+import { Role, Permission, PermissionAssignment } from './authentication';
 
 const main = async () => {
   await prisma.user.deleteMany();
@@ -34,12 +30,11 @@ const main = async () => {
       },
     });
     for (const permission of PermissionAssignment[role]) {
-      const permissionRecord =
-        await prisma.permission.findFirst({
-          where: {
-            name: permission,
-          },
-        });
+      const permissionRecord = await prisma.permission.findFirst({
+        where: {
+          name: permission,
+        },
+      });
 
       if (roleRecord && permissionRecord) {
         await prisma.permissionRole.create({

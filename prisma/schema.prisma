@@ -149,7 +149,7 @@ model CartItem {
   cart_id    Int
   product_id Int
   quantity   Int
-  total      Int
+  total      Float
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

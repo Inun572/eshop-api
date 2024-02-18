@@ -1,4 +1,5 @@
 import prisma from '../../config/db';
+import NotFoundError from '../../errors/notFoundError';
 import TransactionError from '../../errors/transactionError';
 import { addItem, removeItem, updateQuantity } from '../cartServices';
 
@@ -26,9 +27,8 @@ export const addItemTransaction = (
       },
       data: {
         total_items: updatedCartItem.length,
-        total_amount: updatedCartItem.reduce(
-          (acc, item) => acc + item.total,
-          0
+        total_amount: Number(
+          updatedCartItem.reduce((acc, item) => acc + item.total, 0).toFixed(2)
         ),
       },
     });
@@ -61,16 +61,29 @@ export const updateQuantityTransaction = (
       },
       data: {
         total_items: updatedCartItem.length,
-        total_amount: updatedCartItem.reduce(
-          (acc, item) => acc + item.total,
-          0
+        total_amount: Number(
+          updatedCartItem.reduce((acc, item) => acc + item.total, 0).toFixed(2)
         ),
       },
     });
   });
 };
 
-export const removeItemTransaction = (cartId: number, productId: number) => {
+export const removeItemTransaction = async (
+  cartId: number,
+  productId: number
+) => {
+  const isExistInCart = await prisma.cartItem.findFirst({
+    where: {
+      cart_id: cartId,
+      product_id: productId,
+    },
+  });
+
+  if (!isExistInCart) {
+    throw new NotFoundError('Product not found in cart.');
+  }
+
   return prisma.$transaction(async (tx) => {
     const removedItem = await removeItem(cartId, productId);
 
@@ -92,9 +105,8 @@ export const removeItemTransaction = (cartId: number, productId: number) => {
       },
       data: {
         total_items: updatedCartItem.length,
-        total_amount: updatedCartItem.reduce(
-          (acc, item) => acc + item.total,
-          0
+        total_amount: Number(
+          updatedCartItem.reduce((acc, item) => acc + item.total, 0).toFixed(2)
         ),
       },
     });

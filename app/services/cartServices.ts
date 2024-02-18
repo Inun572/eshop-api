@@ -96,16 +96,40 @@ export const addItem = async (
     throw new NotFoundError('Quantity not available');
   }
 
-  let total = 0;
-  if (product) {
-    total = product.price * quantity;
+  const itemInCart = await prisma.cartItem.findFirst({
+    where: {
+      cart_id: cartId,
+      product_id: productId,
+    },
+  });
+
+  if (itemInCart) {
+    const newQuantity = itemInCart.quantity + quantity;
+
+    if (stock < newQuantity) {
+      throw new NotFoundError('Quantity not available');
+    }
+
+    return await prisma.cartItem.update({
+      where: {
+        cart_id_product_id: {
+          cart_id: cartId,
+          product_id: productId,
+        },
+      },
+      data: {
+        quantity: newQuantity,
+        total: newQuantity * product.price,
+      },
+    });
   }
+
   return await prisma.cartItem.create({
     data: {
       cart_id: cartId,
       product_id: productId,
       quantity,
-      total,
+      total: product.price * quantity,
     },
   });
 };
@@ -147,6 +171,7 @@ export const updateQuantity = async (
     },
     data: {
       quantity,
+      total: quantity * product.price,
     },
   });
 };

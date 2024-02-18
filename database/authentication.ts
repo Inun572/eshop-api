@@ -30,17 +30,27 @@ export const Permission = {
   ADD_CATEGORY: 'add_category',
   DELETE_CATEGORY: 'delete_category',
 
-  BROWSE_CARTS: 'browse_cart',
+  BROWSE_CARTS: 'browse_carts',
   READ_CART: 'read_cart',
   EDIT_CART: 'edit_cart',
   ADD_CART: 'add_cart',
   DELETE_CART: 'delete_cart',
+
+  READ_OWN_CART: 'read_own_cart',
+  EDIT_OWN_CART: 'edit_own_cart',
+  ADD_OWN_CART: 'add_own_cart',
+  DELETE_OWN_CART: 'delete_own_cart',
 
   BROWSE_ORDERS: 'browse_orders',
   READ_ORDER: 'read_order',
   EDIT_ORDER: 'edit_order',
   ADD_ORDER: 'add_order',
   DELETE_ORDER: 'delete_order',
+
+  READ_OWN_ORDER: 'read_own_order',
+  EDIT_OWN_ORDER: 'edit_own_order',
+  ADD_OWN_ORDER: 'add_own_order',
+  DELETE_OWN_ORDER: 'delete_own_order',
 };
 
 export const PermissionAssignment = {
@@ -92,40 +102,39 @@ export const PermissionAssignment = {
 
     Permission.BROWSE_CATEGORIES,
     Permission.READ_CATEGORY,
-    Permission.EDIT_CATEGORY,
-    Permission.ADD_CATEGORY,
-    Permission.DELETE_CATEGORY,
 
-    Permission.BROWSE_CARTS,
-    Permission.READ_CART,
-    Permission.EDIT_CART,
-    Permission.ADD_CART,
-    Permission.DELETE_CART,
+    Permission.READ_OWN_CART,
+    Permission.EDIT_OWN_CART,
+    Permission.ADD_OWN_CART,
+    Permission.DELETE_OWN_CART,
 
-    Permission.BROWSE_ORDERS,
-    Permission.READ_ORDER,
-    Permission.EDIT_ORDER,
-    Permission.ADD_ORDER,
-    Permission.DELETE_ORDER,
+    Permission.READ_OWN_ORDER,
+    Permission.EDIT_OWN_ORDER,
+    Permission.ADD_OWN_ORDER,
+    Permission.DELETE_OWN_ORDER,
   ],
 
   [Role.REGULAR_USER]: [
+    Permission.BROWSE_USERS,
+    Permission.READ_USER,
+
     Permission.BROWSE_ALL_PRODUCTS,
     Permission.READ_ALL_PRODUCT,
+
+    Permission.EDIT_SELF,
+    Permission.DELETE_SELF,
 
     Permission.BROWSE_CATEGORIES,
     Permission.READ_CATEGORY,
 
-    Permission.BROWSE_CARTS,
-    Permission.READ_CART,
-    Permission.EDIT_CART,
-    Permission.ADD_CART,
-    Permission.DELETE_CART,
+    Permission.READ_OWN_CART,
+    Permission.EDIT_OWN_CART,
+    Permission.ADD_OWN_CART,
+    Permission.DELETE_OWN_CART,
 
-    Permission.BROWSE_ORDERS,
-    Permission.READ_ORDER,
-    Permission.EDIT_ORDER,
-    Permission.ADD_ORDER,
-    Permission.DELETE_ORDER,
+    Permission.READ_OWN_ORDER,
+    Permission.EDIT_OWN_ORDER,
+    Permission.ADD_OWN_ORDER,
+    Permission.DELETE_OWN_ORDER,
   ],
 };

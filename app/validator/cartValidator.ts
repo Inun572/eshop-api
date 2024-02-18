@@ -11,6 +11,8 @@ const addCartSchema = z.object({
     invalid_type_error: 'Invalid quantity amount',
     required_error: 'Quantity is required',
   }),
+
+  userId: z.number({ invalid_type_error: 'Invalid user ID' }).optional(),
 });
 
 export const validateItemToCart = async (
