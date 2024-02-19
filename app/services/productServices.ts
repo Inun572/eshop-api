@@ -1,8 +1,24 @@
 import { Product } from '../../types/product/product';
 import prisma from '../config/db';
 
-export const getProducts = async () => {
+export const getProducts = async (
+  search: any = '',
+  sort = 'id',
+  order = 'asc',
+  limit = 10,
+  page = 1
+) => {
+  const take = limit || 10;
+  // const skip = (page - 1) * (limit || 10);
+
   return await prisma.product.findMany({
+    take,
+    skip: (page - 1) * (limit || 10),
+    where: {
+      name: {
+        contains: search,
+      },
+    },
     include: {
       category: {
         select: {
@@ -20,6 +36,9 @@ export const getProducts = async () => {
           image_url: true,
         },
       },
+    },
+    orderBy: {
+      [sort]: order,
     },
   });
 };

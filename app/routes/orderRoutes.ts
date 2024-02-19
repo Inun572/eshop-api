@@ -55,7 +55,7 @@ router.post(
 );
 
 router.put(
-  '/seller/:id',
+  '/updateStatus/:id',
   validateToken,
   authorizePermission(Permission.EDIT_OWN_ORDER),
   validateParams,

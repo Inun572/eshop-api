@@ -12,7 +12,35 @@ import {
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await getProducts();
+    const { sort, order, limit, page, search } = req.query;
+    if (
+      sort === undefined &&
+      order === undefined &&
+      limit === undefined &&
+      page === undefined &&
+      search === undefined
+    ) {
+      const products = await getProducts();
+
+      if (!products) {
+        return res.status(400).json({
+          message: 'Product not found',
+        });
+      }
+
+      return res.json({
+        message: 'Success get all products',
+        data: products,
+      });
+    }
+
+    const products = await getProducts(
+      search,
+      sort as string,
+      order as string,
+      Number(limit),
+      Number(page)
+    );
 
     if (!products) {
       return res.status(400).json({
@@ -25,6 +53,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       data: products,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: 'Internal Server Error',
     });

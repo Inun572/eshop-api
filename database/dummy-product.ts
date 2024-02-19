@@ -1,11 +1,11 @@
-const products = [
+export const products = [
   {
     name: 'Eco Kettle',
     description:
       'Stylish and energy-efficient electric kettle with a 1.7-liter capacity, perfect for making tea or coffee for the whole family.',
     price: 79.99,
     stock: 50,
-    category: 'Kitchen',
+    category_id: 1,
     is_deleted: false,
     images_url: [
       'https://example.com/images/eco-kettle-1.jpg',
@@ -18,7 +18,7 @@ const products = [
       'High-quality and durable yoga mat with a non-slip surface, providing excellent grip and cushioning for your yoga practice.',
     price: 49.99,
     stock: 75,
-    category: 'Sports',
+    category_id: 2,
     is_deleted: false,
     images_url: [
       'https://example.com/images/premium-yoga-mat-1.jpg',
@@ -31,7 +31,7 @@ const products = [
       'Wi-Fi enabled coffee maker that allows you to schedule and customize your coffee brewing right from your smartphone.',
     price: 129.99,
     stock: 25,
-    category: 'Kitchen',
+    category_id: 1,
     is_deleted: false,
     images_url: [
       'https://example.com/images/smart-coffee-maker-1.jpg',
@@ -44,7 +44,7 @@ const products = [
       'High-fidelity wireless Bluetooth headphones with active noise cancellation, up to 30 hours of battery life, and a comfortable fit.',
     price: 99.99,
     stock: 100,
-    category: 'Electronics',
+    category_id: 3,
     is_deleted: false,
     images_url: [
       'https://example.com/images/bluetooth-headphones-1.jpg',
@@ -57,7 +57,7 @@ const products = [
       'Soft and comfortable 100% organic cotton t-shirt, ethically made and available in a variety of colors and sizes.',
     price: 19.99,
     stock: 200,
-    category: 'Clothing',
+    category_id: 4,
     is_deleted: false,
     images_url: [
       'https://example.com/images/organic-cotton-t-shirt-1.jpg',
@@ -70,7 +70,7 @@ const products = [
       'Modern and energy-efficient LED desk lamp with adjustable brightness and color temperature, perfect for work or study.',
     price: 39.99,
     stock: 150,
-    category: 'Office',
+    category_id: 5,
     is_deleted: false,
     images_url: [
       'https://example.com/images/led-desk-lamp-1.jpg',
@@ -83,7 +83,7 @@ const products = [
       'High-capacity and compact portable charger with USB-C and USB-A ports, providing fast and reliable charging for your devices on the go.',
     price: 49.99,
     stock: 200,
-    category: 'Electronics',
+    category_id: 3,
     is_deleted: false,
     images_url: [
       'https://example.com/images/portable-charger-1.jpg',
